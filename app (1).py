@@ -1,35 +1,97 @@
 import streamlit as st
-import pickle
 import pandas as pd
+import pickle
 
 # Load model
+
 model = pickle.load(open("flight_fare_model.pkl", "rb"))
 
-st.set_page_config(page_title="Flight Fare Prediction")
+st.set_page_config(
+page_title="Flight Fare Prediction",
+page_icon="✈️",
+layout="centered"
+)
 
-st.title("✈ Flight Fare Prediction")
+st.title("✈️ Flight Fare Prediction")
+st.markdown("Predict airline ticket prices using Machine Learning")
 
-# Inputs
-airline = st.number_input("Airline Code", min_value=0)
-source = st.number_input("Source Code", min_value=0)
-destination = st.number_input("Destination Code", min_value=0)
+st.subheader("Flight Details")
 
-journey_day = st.slider("Journey Day", 1, 31, 15)
-journey_month = st.slider("Journey Month", 1, 12, 6)
-journey_year = st.number_input("Journey Year", value=2026)
+# Encoded values from training
 
-duration_time = st.number_input("Duration (Minutes)", min_value=30)
-total_stops = st.number_input("Total Stops", min_value=0, max_value=4, value=1)
+airline = st.number_input("Airline Code", min_value=0, value=0)
+source = st.number_input("Source Code", min_value=0, value=0)
+destination = st.number_input("Destination Code", min_value=0, value=0)
 
-dep_hour = st.number_input("Departure Hour", min_value=0, max_value=23, value=10)
-dep_min = st.number_input("Departure Minute", min_value=0, max_value=59, value=0)
+col1, col2 = st.columns(2)
 
-arr_hour = st.number_input("Arrival Hour", min_value=0, max_value=23, value=12)
-arr_min = st.number_input("Arrival Minute", min_value=0, max_value=59, value=0)
+with col1:
+journey_day = st.selectbox("Journey Day", list(range(1, 32)))
+journey_month = st.selectbox("Journey Month", list(range(1, 13)))
 
-if st.button("Predict Fare"):
+with col2:
+journey_year = st.number_input(
+"Journey Year",
+min_value=2024,
+max_value=2035,
+value=2026
+)
 
-    features = pd.DataFrame({
+total_stops = st.selectbox(
+"Total Stops",
+[0, 1, 2, 3, 4]
+)
+
+duration_time = st.number_input(
+"Duration (Minutes)",
+min_value=30,
+value=120
+)
+
+st.subheader("Departure Time")
+
+col3, col4 = st.columns(2)
+
+with col3:
+dep_hour = st.number_input(
+"Departure Hour",
+min_value=0,
+max_value=23,
+value=10
+)
+
+with col4:
+dep_min = st.number_input(
+"Departure Minute",
+min_value=0,
+max_value=59,
+value=0
+)
+
+st.subheader("Arrival Time")
+
+col5, col6 = st.columns(2)
+
+with col5:
+arr_hour = st.number_input(
+"Arrival Hour",
+min_value=0,
+max_value=23,
+value=12
+)
+
+with col6:
+arr_min = st.number_input(
+"Arrival Minute",
+min_value=0,
+max_value=59,
+value=0
+)
+
+if st.button("Predict Fare", use_container_width=True):
+
+```
+features = pd.DataFrame({
     "Airline":[airline],
     "Source":[source],
     "Destination":[destination],
@@ -44,6 +106,8 @@ if st.button("Predict Fare"):
     "Arr_Min":[arr_min]
 })
 
-    prediction = model.predict(features)[0]
+prediction = model.predict(features)[0]
 
-    st.success(f"Estimated Flight Fare: ₹ {prediction:,.2f}")
+st.success(
+    f"Estimated Flight Fare: ₹ {prediction:,.2f}"
+)
