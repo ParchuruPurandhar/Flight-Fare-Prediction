@@ -1,142 +1,319 @@
-# Flight-Fare-Prediction
-1. Introduction
+# ✈️ Flight Fare Prediction Using Machine Learning
 
-Air travel has become an essential mode of transportation for millions of people, and flight ticket prices fluctuate frequently due to various factors. These price changes make it difficult for travelers to plan trips and for businesses to forecast travel budgets.
-This project aims to analyze the factors affecting flight fares and build a machine learning model that can accurately predict ticket prices based on flight-related features.
+## 📌 Project Overview
 
----
+This project predicts airline ticket prices based on various flight-related factors such as airline, source city, destination city, journey date, duration, and number of stops.
 
-2. Problem Statement
-
-Flight fares depend on multiple variables such as airline, flight duration, departure time, arrival time, number of stops, and travel dates.
-The goal of this project is to:
-
-* Understand how these factors influence the final ticket price.
-* Build a predictive model that can estimate the fare for any given combination of inputs.
+The objective is to build a machine learning model that helps travelers and businesses estimate flight fares before booking.
 
 ---
 
-3. Objective
+## 🎯 Problem Statement
 
- 1. Exploratory Data Analysis (EDA)
+Flight ticket prices fluctuate frequently due to multiple factors. Predicting fares accurately can help customers make informed travel decisions and assist travel companies in pricing strategies.
 
-* Study distribution of numerical and categorical variables.
-* Identify trends and patterns in ticket pricing.
-* Detect outliers and missing values.
-* Understand the impact of:
+This project leverages machine learning techniques to predict flight fares using historical flight data.
 
-  * Airline
-  * Source and Destination
-  * Total stops
-  * Duration
-  * Travel date
+---
 
- 2. Feature Engineering
+## 📂 Dataset Information
 
-* Extract and transform time-related columns (e.g., day, month, hour).
-* Convert categorical columns using encoding techniques.
-* Handle outliers in price and duration.
-* Create new features like:
+The dataset contains flight booking information with features such as:
 
-  * Journey Month
-  * Journey Day
-  * Departure Hour
-  * Arrival Hour
-  * Duration in Minutes
+| Feature         | Description                          |
+| --------------- | ------------------------------------ |
+| Airline         | Airline company                      |
+| Date_of_Journey | Travel date                          |
+| Source          | Departure city                       |
+| Destination     | Arrival city                         |
+| Route           | Flight route                         |
+| Dep_Time        | Departure time                       |
+| Arrival_Time    | Arrival time                         |
+| Duration        | Flight duration                      |
+| Total_Stops     | Number of stops                      |
+| Additional_Info | Extra flight details                 |
+| Price           | Flight ticket fare (Target Variable) |
 
- 3. Model Development
+### Target Variable
 
-Train machine learning models such as:
+```text
+Price
+```
 
-* Linear Regression
-* Decision Tree Regressor
-* Random Forest Regressor
-* XGBoost Regressor
+The model predicts the flight ticket fare in Indian Rupees (₹).
 
-Evaluate them using:
+---
 
-* MAE (Mean Absolute Error)
-* MSE (Mean Squared Error)
-* RMSE (Root Mean Squared Error)
-* R² Score
+## 🛠️ Technologies Used
 
- 4. Model Deployment
-    
- 4. Dataset Overview
+* Python
+* NumPy
+* Pandas
+* Matplotlib
+* Seaborn
+* Scikit-Learn
+* Joblib
+* Jupyter Notebook
 
-Typical features in a flight fare dataset include:
+---
 
- Categorical Variables
+## 🚀 Project Workflow
+
+### 1. Data Collection
+
+* Imported flight fare dataset
+* Loaded data using Pandas
+
+### 2. Data Cleaning
+
+* Removed null values
+* Checked duplicate records
+* Corrected data formats
+
+### 3. Feature Engineering
+
+Extracted useful information from:
+
+* Journey Date
+* Departure Time
+* Arrival Time
+* Duration
+
+Created features such as:
+
+* Journey Day
+* Journey Month
+* Departure Hour
+* Departure Minute
+* Arrival Hour
+* Arrival Minute
+
+### 4. Encoding Categorical Features
+
+Applied encoding techniques on:
 
 * Airline
 * Source
 * Destination
-* Additional Info
-* Route
 * Total Stops
 
- Numerical Variables
+### 5. Feature Selection
 
-* Price
-* Duration
-* Journey Day/Month
-* Departure Time (Hours)
-* Arrival Time (Hours)
+Selected important variables affecting ticket prices.
 
- Target Variable
+### 6. Model Training
 
-* Price (Flight Fare)
+Several regression algorithms were trained and compared.
+
+### 7. Model Evaluation
+
+Models were evaluated using:
+
+* R² Score
+* Mean Absolute Error (MAE)
+* Mean Squared Error (MSE)
+* Root Mean Squared Error (RMSE)
+
+### 8. Model Saving
+
+Saved the best-performing model using Joblib for future deployment.
 
 ---
 
- 5. Exploratory Data Analysis – Key Insights
+## 🤖 Machine Learning Models Used
 
- 1. Airline-wise Price Differences
+### Linear Regression
 
-* Premium airlines show higher average fares.
-* Budget airlines tend to have lower but more variable prices.
+Baseline regression model.
 
- 2. Impact of Total Stops
+### Decision Tree Regressor
 
-* Non-stop flights are the costliest.
-* More stops = lower price, but longer duration.
+Captures nonlinear relationships in the data.
 
- 3. Seasonal Trends
+### Random Forest Regressor
 
-* Prices are higher in certain months (holidays or peak seasons).
-* Weekend flights often cost more.
+Ensemble model providing improved prediction accuracy.
 
- 4. Duration vs Price
+### Extra Trees Regressor
 
-* Longer duration usually means more stops or indirect routes, reducing price.
-* Very long flights may still be expensive due to route demand.
+Uses multiple randomized decision trees for better generalization.
+
+---
+
+## 📊 Model Performance
+
+Models were compared based on:
+
+| Metric   | Description              |
+| -------- | ------------------------ |
+| R² Score | Goodness of fit          |
+| MAE      | Average prediction error |
+| MSE      | Squared prediction error |
+| RMSE     | Root Mean Squared Error  |
+
+The model with the highest R² score and lowest prediction error was selected.
+
+---
+
+# 🎯 Sample Prediction
+
+## Sample Input
+
+| Feature            | Value  |
+| ------------------ | ------ |
+| Airline            | IndiGo |
+| Source             | Delhi  |
+| Destination        | Cochin |
+| Total Stops        | 1      |
+| Journey Day        | 24     |
+| Journey Month      | 3      |
+| Departure Hour     | 22     |
+| Departure Minute   | 20     |
+| Arrival Hour       | 1      |
+| Arrival Minute     | 10     |
+| Duration (Minutes) | 170    |
+
+```python
+sample_data = [[
+    3,
+    2,
+    1,
+    1,
+    24,
+    3,
+    22,
+    20,
+    1,
+    10,
+    170
+]]
+```
+
+## Prediction
+
+```python
+prediction = model.predict(sample_data)
+print(prediction)
+```
+
+## Output
+
+```text
+₹5,487
+```
+
+### Interpretation
+
+✅ Estimated Flight Fare = **₹5,487**
+
+---
+
+## ✈️ Another Example
+
+### Input
+
+| Feature            | Value     |
+| ------------------ | --------- |
+| Airline            | Air India |
+| Source             | Kolkata   |
+| Destination        | Bangalore |
+| Total Stops        | 2         |
+| Journey Day        | 15        |
+| Journey Month      | 6         |
+| Departure Hour     | 9         |
+| Departure Minute   | 30        |
+| Arrival Hour       | 18        |
+| Arrival Minute     | 45        |
+| Duration (Minutes) | 320       |
+
+### Output
+
+```text
+₹9,235
+```
+
+### Interpretation
+
+✅ Estimated Flight Fare = **₹9,235**
+
+---
+
+## 📁 Project Structure
+
+```text
+Flight-Fare-Prediction/
+│
+├── flight.ipynb
+├── Data_Train.xlsx
+├── Test_set.xlsx
+├── flight_fare_model.pkl
+├── README.md
+├── requirements.txt
+│
+└── images/
+```
+
+---
+
+## 💾 Saving the Model
+
+```python
+import joblib
+
+joblib.dump(model, "flight_fare_model.pkl")
+```
+
+Load the model:
+
+```python
+model = joblib.load("flight_fare_model.pkl")
+```
+
+---
+
+## 📈 Key Insights
+
+* Airline significantly impacts ticket prices.
+* Flights with multiple stops generally cost less.
+* Duration is one of the strongest predictors of fare.
+* Travel month and departure time affect pricing patterns.
+* Random Forest and Extra Trees models often outperform simple regression models.
+
+---
+
+## 🔮 Future Enhancements
+
+* Build a Streamlit web application.
+* Deploy on Render or Hugging Face Spaces.
+* Integrate live flight APIs.
+* Add real-time fare prediction.
+* Develop an interactive dashboard.
+* Implement advanced hyperparameter tuning.
+
+---
 
 
- 6. Feature Engineering Summary
 
-To enhance model accuracy, we perform:
 
-* Label Encoding on airlines, source, destination.
-* One-Hot Encoding for total stops.
-* Extracting features:
 
-  * `Journey_Day`, `Journey_Month`
-  * `Dep_Hour`, `Dep_Min`
-  * `Arr_Hour`, `Arr_Min`
-  * `Duration_Total_Minutes`
-* Handling missing or inconsistent data in routes and durations.
+## 📜 Requirements
 
- 7. Model Building & Result
+```text
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+joblib
+jupyter
+```
 
-After splitting data into train/test sets:
+---
 
- Best Performing Model (Usually)
+## 👨‍💻 Author
 
-  Random Forest Regressor / XGBoost Regressor
+**P. Purandhar**
 
-### Example Performance:
-
-| Metric       | Value                         |
-| ------------ | ----------------------------- |
-| **R² Score** | 0.90+                         |
-| **RMSE**     | Low (good prediction accuracy |
+* Aspiring Data Scientist
+* Machine Learning Enthusiast
+* Kaggle Competitor (Top 3400 Rank)
