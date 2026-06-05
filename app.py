@@ -53,22 +53,28 @@ with col5:
 with col6:
     arr_min = st.number_input("Arrival Minute",min_value=0,max_value=59,value=0)
 
-if st.button("Predict Fare", use_container_width=True):
+if st.button("Predict Fare"):
 
-features = pd.DataFrame({
-    "Airline":[airline],
-    "Source":[source],
-    "Destination":[destination],
-    "Total_Stops":[total_stops],
-    "Journey_Day":[journey_day],
-    "Journey_Month":[journey_month],
-    "Journey_Year":[journey_year],
-    "Duration_Time":[duration_time],
-    "Dep_Hour":[dep_hour],
-    "Dep_Min":[dep_min],
-    "Arr_Hour":[arr_hour],
-    "Arr_Min":[arr_min]
-})
+    features = pd.DataFrame({
+        "Airline":[airline],
+        "Source":[source],
+        "Destination":[destination],
+        "Total_Stops":[total_stops],
+        "Journey_Day":[journey_day],
+        "Journey_Month":[journey_month],
+        "Journey_Year":[journey_year],
+        "Duration_Time":[duration_time],
+        "Dep_Hour":[dep_hour],
+        "Dep_Min":[dep_min],
+        "Arr_Hour":[arr_hour],
+        "Arr_Min":[arr_min]
+    })
+
+    prediction = model.predict(features)[0]
+
+    st.success(
+        f"Estimated Flight Fare: ₹ {prediction:,.2f}"
+    )
 
 prediction = model.predict(features)[0]
 
