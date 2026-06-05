@@ -33,7 +33,7 @@ with col2:
     journey_year = st.number_input("Journey Year",min_value=2024,max_value=2035,value=2026)
 
 total_stops = st.selectbox("Total Stops",[0, 1, 2, 3, 4])
-duration_time = st.number_input("Duration (Minutes)",min_value=30,value=12)
+duration_time = st.number_input("Duration (Minutes)",min_value=30,value=30)
 
 st.subheader("Departure Time")
 col3, col4 = st.columns(2)
