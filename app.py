@@ -75,9 +75,3 @@ if st.button("Predict Fare"):
     st.success(
         f"Estimated Flight Fare: ₹ {prediction:,.2f}"
     )
-
-prediction = model.predict(features)[0]
-
-st.success(
-    f"Estimated Flight Fare: ₹ {prediction:,.2f}"
-)
