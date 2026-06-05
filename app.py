@@ -26,71 +26,35 @@ destination = st.number_input("Destination Code", min_value=0, value=0)
 col1, col2 = st.columns(2)
 
 with col1:
-journey_day = st.selectbox("Journey Day", list(range(1, 32)))
-journey_month = st.selectbox("Journey Month", list(range(1, 13)))
+    journey_day = st.selectbox("Journey Day", list(range(1, 32)))
+    journey_month = st.selectbox("Journey Month", list(range(1, 13)))
 
 with col2:
-journey_year = st.number_input(
-"Journey Year",
-min_value=2024,
-max_value=2035,
-value=2026
-)
+    journey_year = st.number_input("Journey Year",min_value=2024,max_value=2035,value=2026)
 
-total_stops = st.selectbox(
-"Total Stops",
-[0, 1, 2, 3, 4]
-)
-
-duration_time = st.number_input(
-"Duration (Minutes)",
-min_value=30,
-value=120
-)
+total_stops = st.selectbox("Total Stops",[0, 1, 2, 3, 4])
+duration_time = st.number_input("Duration (Minutes)",min_value=30,value=12)
 
 st.subheader("Departure Time")
-
 col3, col4 = st.columns(2)
-
 with col3:
-dep_hour = st.number_input(
-"Departure Hour",
-min_value=0,
-max_value=23,
-value=10
-)
+    dep_hour = st.number_input("Departure Hour",min_value=0,max_value=23,value=10)
 
 with col4:
-dep_min = st.number_input(
-"Departure Minute",
-min_value=0,
-max_value=59,
-value=0
-)
+    dep_min = st.number_input("Departure Minute",min_value=0,max_value=59,value=0)
 
 st.subheader("Arrival Time")
 
 col5, col6 = st.columns(2)
 
 with col5:
-arr_hour = st.number_input(
-"Arrival Hour",
-min_value=0,
-max_value=23,
-value=12
-)
+    arr_hour = st.number_input("Arrival Hour",min_value=0,max_value=23,value=12)
 
 with col6:
-arr_min = st.number_input(
-"Arrival Minute",
-min_value=0,
-max_value=59,
-value=0
-)
+    arr_min = st.number_input("Arrival Minute",min_value=0,max_value=59,value=0)
 
 if st.button("Predict Fare", use_container_width=True):
 
-```
 features = pd.DataFrame({
     "Airline":[airline],
     "Source":[source],
