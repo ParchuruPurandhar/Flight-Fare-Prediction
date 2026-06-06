@@ -1,77 +1,179 @@
 import streamlit as st
 import pandas as pd
 import pickle
-
-# Load model
-
-model = pickle.load(open("flight_fare_model.pkl", "rb"))
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 st.set_page_config(
-page_title="Flight Fare Prediction",
-page_icon="✈️",
-layout="centered"
+    page_title="Flight Fare Prediction",
+    page_icon="✈️",
+    layout="wide"
 )
 
-st.title("✈️ Flight Fare Prediction")
-st.markdown("Predict airline ticket prices using Machine Learning")
+# -------------------------
+# Load Data
+# -------------------------
+@st.cache_resource
+def load_model():
+    return pickle.load(open("flight_fare_model.pkl", "rb"))
 
-st.subheader("Flight Details")
+@st.cache_data
+def load_data():
+    return pd.read_csv("Flight_Fare.csv")
 
-# Encoded values from training
+model = load_model()
+df = load_data()
 
-airline = st.number_input("Airline Code", min_value=0, value=0)
-source = st.number_input("Source Code", min_value=0, value=0)
-destination = st.number_input("Destination Code", min_value=0, value=0)
+# -------------------------
+# Sidebar
+# -------------------------
+page = st.sidebar.selectbox(
+    "Navigation",
+    [
+        "Home",
+        "EDA Dashboard",
+        "Prediction"
+    ]
+)
 
-col1, col2 = st.columns(2)
+# -------------------------
+# HOME
+# -------------------------
+if page == "Home":
 
-with col1:
-    journey_day = st.selectbox("Journey Day", list(range(1, 32)))
-    journey_month = st.selectbox("Journey Month", list(range(1, 13)))
+    st.title("✈️ Flight Fare Prediction")
 
-with col2:
-    journey_year = st.number_input("Journey Year",min_value=2024,max_value=2035,value=2026)
+    st.write("""
+    Predict airline ticket prices using Machine Learning.
+    """)
 
-total_stops = st.selectbox("Total Stops",[0, 1, 2, 3, 4])
-duration_time = st.number_input("Duration (Minutes)",min_value=30,value=30)
+    st.subheader("Dataset Overview")
 
-st.subheader("Departure Time")
-col3, col4 = st.columns(2)
-with col3:
-    dep_hour = st.number_input("Departure Hour",min_value=0,max_value=23,value=10)
+    col1, col2 = st.columns(2)
 
-with col4:
-    dep_min = st.number_input("Departure Minute",min_value=0,max_value=59,value=0)
+    with col1:
+        st.metric("Rows", df.shape[0])
 
-st.subheader("Arrival Time")
+    with col2:
+        st.metric("Columns", df.shape[1])
 
-col5, col6 = st.columns(2)
+    st.dataframe(df.head())
 
-with col5:
-    arr_hour = st.number_input("Arrival Hour",min_value=0,max_value=23,value=12)
+# -------------------------
+# EDA
+# -------------------------
+elif page == "EDA Dashboard":
 
-with col6:
-    arr_min = st.number_input("Arrival Minute",min_value=0,max_value=59,value=0)
+    st.title("📊 Exploratory Data Analysis")
 
-if st.button("Predict Fare"):
+    tab1, tab2, tab3 = st.tabs([
+        "Airlines",
+        "Duration vs Price",
+        "Stops vs Price"
+    ])
 
-    features = pd.DataFrame({
-        "Airline":[airline],
-        "Source":[source],
-        "Destination":[destination],
-        "Total_Stops":[total_stops],
-        "Journey_Day":[journey_day],
-        "Journey_Month":[journey_month],
-        "Journey_Year":[journey_year],
-        "Duration_Time":[duration_time],
-        "Dep_Hour":[dep_hour],
-        "Dep_Min":[dep_min],
-        "Arr_Hour":[arr_hour],
-        "Arr_Min":[arr_min]
-    })
+    with tab1:
 
-    prediction = model.predict(features)[0]
+        fig, ax = plt.subplots(figsize=(8,5))
 
-    st.success(
-        f"Estimated Flight Fare: ₹ {prediction:,.2f}"
+        sns.countplot(
+            y=df["Airline"],
+            order=df["Airline"].value_counts().index,
+            ax=ax
+        )
+
+        st.pyplot(fig)
+
+    with tab2:
+
+        fig, ax = plt.subplots(figsize=(8,5))
+
+        sns.scatterplot(
+            data=df,
+            x="Duration_Time",
+            y="Price",
+            ax=ax
+        )
+
+        st.pyplot(fig)
+
+    with tab3:
+
+        fig, ax = plt.subplots(figsize=(8,5))
+
+        sns.boxplot(
+            data=df,
+            x="Total_Stops",
+            y="Price",
+            ax=ax
+        )
+
+        st.pyplot(fig)
+
+# -------------------------
+# PREDICTION
+# -------------------------
+elif page == "Prediction":
+
+    st.title("💰 Predict Flight Fare")
+
+    airline = st.number_input(
+        "Airline (Encoded Value)",
+        min_value=0
     )
+
+    source = st.number_input(
+        "Source (Encoded Value)",
+        min_value=0
+    )
+
+    destination = st.number_input(
+        "Destination (Encoded Value)",
+        min_value=0
+    )
+
+    total_stops = st.selectbox(
+        "Total Stops",
+        [0,1,2,3,4]
+    )
+
+    journey_day = st.slider(
+        "Journey Day",
+        1,31,15
+    )
+
+    journey_month = st.slider(
+        "Journey Month",
+        1,12,6
+    )
+
+    journey_year = st.number_input(
+        "Journey Year",
+        value=2019
+    )
+
+    duration_time = st.number_input(
+        "Duration (Minutes)",
+        min_value=30
+    )
+
+    if st.button("Predict Fare"):
+
+        input_df = pd.DataFrame({
+
+            "Airline":[airline],
+            "Source":[source],
+            "Destination":[destination],
+            "Total_Stops":[total_stops],
+            "Journey_Day":[journey_day],
+            "Journey_Month":[journey_month],
+            "Journey_Year":[journey_year],
+            "Duration_Time":[duration_time]
+
+        })
+
+        prediction = model.predict(input_df)[0]
+
+        st.success(
+            f"Estimated Flight Fare: ₹ {prediction:,.0f}"
+        )
