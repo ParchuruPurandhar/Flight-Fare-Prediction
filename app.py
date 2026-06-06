@@ -90,7 +90,7 @@ elif page == "EDA Dashboard":
 
         sns.scatterplot(
             data=df,
-            x="Duration_Time",
+            x="Duration",
             y="Price",
             ax=ax
         )
@@ -111,69 +111,117 @@ elif page == "EDA Dashboard":
         st.pyplot(fig)
 
 # -------------------------
+```python
+# -------------------------
 # PREDICTION
 # -------------------------
 elif page == "Prediction":
 
-    st.title("💰 Predict Flight Fare")
+    st.title("✈️ Flight Fare Prediction")
 
-    airline = st.number_input(
-        "Airline (Encoded Value)",
-        min_value=0
-    )
+    col1, col2 = st.columns(2)
 
-    source = st.number_input(
-        "Source (Encoded Value)",
-        min_value=0
-    )
+    with col1:
 
-    destination = st.number_input(
-        "Destination (Encoded Value)",
-        min_value=0
-    )
+        airline = st.number_input(
+            "Airline Code",
+            min_value=0,
+            value=0
+        )
 
-    total_stops = st.selectbox(
-        "Total Stops",
-        [0,1,2,3,4]
-    )
+        source = st.number_input(
+            "Source Code",
+            min_value=0,
+            value=0
+        )
 
-    journey_day = st.slider(
-        "Journey Day",
-        1,31,15
-    )
+        destination = st.number_input(
+            "Destination Code",
+            min_value=0,
+            value=0
+        )
 
-    journey_month = st.slider(
-        "Journey Month",
-        1,12,6
-    )
+        total_stops = st.selectbox(
+            "Total Stops",
+            [0, 1, 2, 3, 4]
+        )
 
-    journey_year = st.number_input(
-        "Journey Year",
-        value=2019
-    )
+        journey_day = st.slider(
+            "Journey Day",
+            1, 31, 15
+        )
 
-    duration_time = st.number_input(
-        "Duration (Minutes)",
-        min_value=30
-    )
+        journey_month = st.slider(
+            "Journey Month",
+            1, 12, 6
+        )
+
+    with col2:
+
+        journey_year = st.number_input(
+            "Journey Year",
+            value=2019
+        )
+
+        duration_time = st.number_input(
+            "Duration (Minutes)",
+            min_value=30,
+            value=120
+        )
+
+        dep_hour = st.slider(
+            "Departure Hour",
+            0, 23, 10
+        )
+
+        dep_min = st.slider(
+            "Departure Minute",
+            0, 59, 0
+        )
+
+        arr_hour = st.slider(
+            "Arrival Hour",
+            0, 23, 12
+        )
+
+        arr_min = st.slider(
+            "Arrival Minute",
+            0, 59, 0
+        )
 
     if st.button("Predict Fare"):
 
         input_df = pd.DataFrame({
 
-            "Airline":[airline],
-            "Source":[source],
-            "Destination":[destination],
-            "Total_Stops":[total_stops],
-            "Journey_Day":[journey_day],
-            "Journey_Month":[journey_month],
-            "Journey_Year":[journey_year],
-            "Duration_Time":[duration_time]
+            "Airline": [airline],
+            "Source": [source],
+            "Destination": [destination],
+            "Total_Stops": [total_stops],
+
+            "Journey_Day": [journey_day],
+            "Journey_Month": [journey_month],
+            "Journey_Year": [journey_year],
+
+            "Duration_Time": [duration_time],
+
+            "Dep_Hour": [dep_hour],
+            "Dep_Min": [dep_min],
+
+            "Arr_Hour": [arr_hour],
+            "Arr_Min": [arr_min]
 
         })
 
-        prediction = model.predict(input_df)[0]
+        try:
 
-        st.success(
-            f"Estimated Flight Fare: ₹ {prediction:,.0f}"
-        )
+            prediction = model.predict(input_df)[0]
+
+            st.success(
+                f"💰 Estimated Flight Fare: ₹ {prediction:,.0f}"
+            )
+
+        except Exception as e:
+
+            st.error(str(e))
+```
+
