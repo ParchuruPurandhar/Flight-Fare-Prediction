@@ -3,4 +3,6 @@ pandas
 numpy
 scikit-learn
 xgboost
-openpyxl
+matplotlib
+seaborn
+pickle-mixin
