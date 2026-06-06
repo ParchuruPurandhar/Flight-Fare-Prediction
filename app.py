@@ -119,26 +119,35 @@ elif page == "Prediction":
 
     st.title("✈️ Flight Fare Prediction")
 
+    airline_encoder = pickle.load(
+        open("airline_encoder.pkl", "rb")
+    )
+
+    source_encoder = pickle.load(
+        open("source_encoder.pkl", "rb")
+    )
+
+    destination_encoder = pickle.load(
+        open("destination_encoder.pkl", "rb")
+    )
+
     col1, col2 = st.columns(2)
 
     with col1:
 
-        airline = st.number_input(
-            "Airline Code",
-            min_value=0,
-            value=0
+        airline = st.selectbox(
+            "Airline",
+            airline_encoder.classes_
         )
 
-        source = st.number_input(
-            "Source Code",
-            min_value=0,
-            value=0
+        source = st.selectbox(
+            "Source",
+            source_encoder.classes_
         )
 
-        destination = st.number_input(
-            "Destination Code",
-            min_value=0,
-            value=0
+        destination = st.selectbox(
+            "Destination",
+            destination_encoder.classes_
         )
 
         total_stops = st.selectbox(
@@ -191,37 +200,46 @@ elif page == "Prediction":
 
     if st.button("Predict Fare"):
 
+        airline = airline_encoder.transform(
+            [airline]
+        )[0]
+
+        source = source_encoder.transform(
+            [source]
+        )[0]
+
+        destination = destination_encoder.transform(
+            [destination]
+        )[0]
+
         input_df = pd.DataFrame({
 
-            "Airline": [airline],
-            "Source": [source],
-            "Destination": [destination],
-            "Total_Stops": [total_stops],
+            "Airline":[airline],
+            "Source":[source],
+            "Destination":[destination],
+            "Total_Stops":[total_stops],
 
-            "Journey_Day": [journey_day],
-            "Journey_Month": [journey_month],
-            "Journey_Year": [journey_year],
+            "Journey_Day":[journey_day],
+            "Journey_Month":[journey_month],
+            "Journey_Year":[journey_year],
 
-            "Duration_Time": [duration_time],
+            "Duration_Time":[duration_time],
 
-            "Dep_Hour": [dep_hour],
-            "Dep_Min": [dep_min],
+            "Dep_Hour":[dep_hour],
+            "Dep_Min":[dep_min],
 
-            "Arr_Hour": [arr_hour],
-            "Arr_Min": [arr_min]
+            "Arr_Hour":[arr_hour],
+            "Arr_Min":[arr_min]
 
         })
 
-        try:
+        prediction = model.predict(input_df)[0]
 
-            prediction = model.predict(input_df)[0]
+        st.success(
+            f"💰 Estimated Flight Fare: ₹ {prediction:,.0f}"
+        )
 
-            st.success(
-                f"💰 Estimated Flight Fare: ₹ {prediction:,.0f}"
-            )
-
-        except Exception as e:
-
-            st.error(str(e))
-```
-
+        st.metric(
+            "Predicted Fare",
+            f"₹ {prediction:,.0f}"
+        )
