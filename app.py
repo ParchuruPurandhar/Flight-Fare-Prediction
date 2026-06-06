@@ -19,7 +19,7 @@ def load_model():
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("Flight_Fare.csv")
+    return pd.read_excel("Flight_Fare.xlsx")
 
 model = load_model()
 df = load_data()
